@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from collections import defaultdict
 from errno import ENOENT
 from stat import S_IFDIR, S_IFLNK, S_IFREG
@@ -211,11 +213,12 @@ class Memory(LoggingMixIn, Operations):
 
 
 
-    def symlink(self, source, target):
-        sourcename = source.split('/')[-1]
-        sourcedir = '/'.join(source.split('/')[:-1])
-        sourcedirobj = self.getDir(sourcedir)
-        sourcedirobj.files[sourcename] = File(data=target, properties=Property(st_mode=S_IFLNK, st_nlink=1, st_size=len(target), st_ctime=time(), st_mtime=time(), st_atime=time()))
+    def symlink(self, target, source):
+        targetname = target.split('/')[-1]
+        targetdir = '/'.join(target.split('/')[:-1])
+        targetdirobj = self.getDir(targetdir)
+
+        targetdirobj.files[targetname] = File(data=source, properties=Property(st_mode=S_IFLNK, st_nlink=1, st_size=len(source), st_ctime=time(), st_mtime=time(), st_atime=time()))
 
 
 
