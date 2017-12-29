@@ -6,7 +6,7 @@ A FusePy based in memory filesystem
 Requirements:
 
 	FusePy - https://github.com/terencehonles/fusepy
-	Python 2.7 is known to work. 
+	Python 3.6 is known to work. 
 	Other Python versions may work
 	
 Inspiration:
