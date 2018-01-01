@@ -5,8 +5,6 @@ import os
 from fuse import FUSE, FuseOSError, Operations, LoggingMixIn
 
 class Property(dict):
-    """ Default Properties of a file/directory object"""
-
     def __init__(self, st_mode=493, st_nlink=0, st_size=0, st_ctime=0, st_mtime=0, st_atime=0, st_gid=0, st_uid=0, st_blocks=0):
         self.st_mode = st_mode
         self.st_nlink = st_nlink
@@ -18,26 +16,19 @@ class Property(dict):
         self.st_uid = os.getuid()
         self.st_blocks = st_blocks
 
-
 class Directory(object):
-    """ A directory object"""
-
     def __init__(self, files, directories, properties):
         self.files = files
         self.directories = directories
         self.properties = properties
 
-
 class File(object):
-    """ A file object"""
-
     def __init__(self, data, properties):
         self.data = data
         self.properties = properties
 
 
 class Memory(LoggingMixIn, Operations):
-    """Example memory filesystem. Supports only one level of files."""
 
     def __unicode__(self):
         return str(self)
@@ -171,13 +162,13 @@ class Memory(LoggingMixIn, Operations):
         targetdirobj = self.get_dir(targetdir)
         now = time.time()
         targetdirobj.files[targetname] = File(data=source, properties=Property(
-            st_mode=stat.S_IFLNK, st_nlink=1, st_size=len(source), st_ctime=now, st_mtime=now, st_atime=now, st_blocks=len(source)//512))
+            st_mode=stat.S_IFLNK, st_nlink=1, st_size=len(source), st_ctime=now, st_mtime=now, st_atime=now, st_blocks=len(source) // 512))
 
     def truncate(self, path, length, fh=None):
         st = self.get_file(path)
         st.data = st.data[:length]
         st.properties.st_size = length
-        st.properties.st_blocks = length//512
+        st.properties.st_blocks = length // 512
 
     def unlink(self, path):
         dirname = '/'.join(path.split('/')[:-1])
@@ -196,7 +187,7 @@ class Memory(LoggingMixIn, Operations):
         st = self.get_file(path)
         st.data[offset:] = data
         st.properties.st_size = len(st.data)
-        st.properties.st_blocks = len(st.data)//512
+        st.properties.st_blocks = len(st.data) // 512
         return len(data)
 
     def get_file(self, path):
@@ -224,9 +215,10 @@ class Memory(LoggingMixIn, Operations):
                 location = location.directories[dirpath]
             else:
                 return None
-
         return location
 
+
 if __name__ == '__main__':
-   import sys
-   fuse = FUSE(Memory(), sys.argv[1], foreground=True, debug=True)
+    import sys
+    if sys.argv[0] == 'mem.py':
+        fuse = FUSE(Memory(), sys.argv[1], foreground=True, debug=True)
